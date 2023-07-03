@@ -1,23 +1,30 @@
-const mysql = require("mysql2/promise");
+// Inside your db.js
+const mysql = require("mysql2");
 
-class Database {
-constructor(config) {
-    this.connection = mysql.createConnection(config);
-}
-
-async query(sql, params) {
-    const [rows] = await this.connection.promise().query(sql, params);
-    return rows;
-}
-
-close() {
-    return this.connection.end();
-}
-}
-
-module.exports = new Database({
+const db = mysql.createConnection({
 host: "localhost",
 user: "root",
-password: "your_password",
+password: "password",
 database: "employee_db",
 });
+
+db.connect(function (err) {
+if (err) throw err;
+console.log("Connected to the database!");
+});
+
+module.exports = {
+getAllDepartments() {
+    return db.promise().query(`SELECT * FROM department`);
+},
+getAllRoles() {
+    return db.promise().query(`SELECT * FROM role`);
+},
+getAllEmployees() {
+    return db.promise().query(`SELECT * FROM employee`);
+},
+
+close() {
+    db.end();
+},
+};
