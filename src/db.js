@@ -1,30 +1,17 @@
-// Inside your db.js
-const mysql = require("mysql2");
-
-const db = mysql.createConnection({
-host: "localhost",
-user: "root",
-password: "password",
-database: "employee_db",
-});
-
-db.connect(function (err) {
-if (err) throw err;
-console.log("Connected to the database!");
-});
-
 module.exports = {
-getAllDepartments() {
-    return db.promise().query(`SELECT * FROM department`);
-},
-getAllRoles() {
-    return db.promise().query(`SELECT * FROM role`);
-},
-getAllEmployees() {
-    return db.promise().query(`SELECT * FROM employee`);
-},
+    addDepartment(name) {
+    return db.promise().query(`INSERT INTO department (name) VALUES (?)`, [name]);
+    },
 
-close() {
-    db.end();
-},
+    addRole(title, salary, department_id) {
+    return db.promise().query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [title, salary, department_id]);
+    },
+
+    addEmployee(first_name, last_name, role_id, manager_id) {
+    return db.promise().query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [first_name, last_name, role_id, manager_id]);
+    },
+
+    updateEmployeeRole(employee_id, role_id) {
+    return db.promise().query(`UPDATE employee SET role_id = ? WHERE id = ?`, [role_id, employee_id]);
+    },
 };
